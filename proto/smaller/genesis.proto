@@ -1,0 +1,15 @@
+syntax = "proto3";
+package tmsdkeys.smaller3.smaller;
+
+import "gogoproto/gogo.proto";
+import "smaller/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
+
+// GenesisState defines the smaller module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  string port_id = 2;
+  // this line is used by starport scaffolding # genesis/proto/state
+}
