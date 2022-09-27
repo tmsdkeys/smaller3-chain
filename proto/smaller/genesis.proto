@@ -17,3 +17,4 @@ message GenesisState {
   repeated StoredGame storedGameList = 4 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }
+

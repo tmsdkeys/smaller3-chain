@@ -52136,6 +52136,13 @@ definitions:
     title: >-
       SignatureCounts contains information about signature reporting for a
       number of blocks
+  tmsdkeys.smaller3.smaller.MsgPlayGameResponse:
+    type: object
+    properties:
+      gameIndex:
+        type: string
+      win:
+        type: boolean
   tmsdkeys.smaller3.smaller.Params:
     type: object
     description: Params defines the parameters for the module.

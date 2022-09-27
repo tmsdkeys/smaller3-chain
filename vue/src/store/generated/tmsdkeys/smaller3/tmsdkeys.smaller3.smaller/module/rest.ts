@@ -20,6 +20,11 @@ export interface RpcStatus {
   details?: ProtobufAny[];
 }
 
+export interface SmallerMsgPlayGameResponse {
+  gameIndex?: string;
+  win?: boolean;
+}
+
 /**
  * Params defines the parameters for the module.
  */
