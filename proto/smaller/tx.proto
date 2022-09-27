@@ -8,6 +8,7 @@ option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
 // Msg defines the Msg service.
 service Msg {
       rpc PlayGame(MsgPlayGame) returns (MsgPlayGameResponse);
+  rpc SendGameResult(MsgSendGameResult) returns (MsgSendGameResultResponse);
 // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -21,4 +22,14 @@ message MsgPlayGameResponse {
   bool win = 2;
 }
 
+message MsgSendGameResult {
+  string creator = 1;
+  string port = 2;
+  string channelID = 3;
+  uint64 timeoutTimestamp = 4;
+  uint64 gameId = 5;
+}
+
+message MsgSendGameResultResponse {
+}
 // this line is used by starport scaffolding # proto/tx/message

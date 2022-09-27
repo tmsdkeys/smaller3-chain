@@ -25,6 +25,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type SmallerPacketData struct {
 	// Types that are valid to be assigned to Packet:
 	//	*SmallerPacketData_NoData
+	//	*SmallerPacketData_GameResultPacket
 	Packet isSmallerPacketData_Packet `protobuf_oneof:"packet"`
 }
 
@@ -70,8 +71,12 @@ type isSmallerPacketData_Packet interface {
 type SmallerPacketData_NoData struct {
 	NoData *NoData `protobuf:"bytes,1,opt,name=noData,proto3,oneof" json:"noData,omitempty"`
 }
+type SmallerPacketData_GameResultPacket struct {
+	GameResultPacket *GameResultPacketData `protobuf:"bytes,2,opt,name=gameResultPacket,proto3,oneof" json:"gameResultPacket,omitempty"`
+}
 
-func (*SmallerPacketData_NoData) isSmallerPacketData_Packet() {}
+func (*SmallerPacketData_NoData) isSmallerPacketData_Packet()           {}
+func (*SmallerPacketData_GameResultPacket) isSmallerPacketData_Packet() {}
 
 func (m *SmallerPacketData) GetPacket() isSmallerPacketData_Packet {
 	if m != nil {
@@ -87,10 +92,18 @@ func (m *SmallerPacketData) GetNoData() *NoData {
 	return nil
 }
 
+func (m *SmallerPacketData) GetGameResultPacket() *GameResultPacketData {
+	if x, ok := m.GetPacket().(*SmallerPacketData_GameResultPacket); ok {
+		return x.GameResultPacket
+	}
+	return nil
+}
+
 // XXX_OneofWrappers is for the internal use of the proto package.
 func (*SmallerPacketData) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
 		(*SmallerPacketData_NoData)(nil),
+		(*SmallerPacketData_GameResultPacket)(nil),
 	}
 }
 
@@ -130,26 +143,123 @@ func (m *NoData) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_NoData proto.InternalMessageInfo
 
+// GameResultPacketData defines a struct for the packet payload
+type GameResultPacketData struct {
+	GameId uint64 `protobuf:"varint,1,opt,name=gameId,proto3" json:"gameId,omitempty"`
+}
+
+func (m *GameResultPacketData) Reset()         { *m = GameResultPacketData{} }
+func (m *GameResultPacketData) String() string { return proto.CompactTextString(m) }
+func (*GameResultPacketData) ProtoMessage()    {}
+func (*GameResultPacketData) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1100faa0adfb763c, []int{2}
+}
+func (m *GameResultPacketData) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GameResultPacketData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GameResultPacketData.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GameResultPacketData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameResultPacketData.Merge(m, src)
+}
+func (m *GameResultPacketData) XXX_Size() int {
+	return m.Size()
+}
+func (m *GameResultPacketData) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameResultPacketData.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GameResultPacketData proto.InternalMessageInfo
+
+func (m *GameResultPacketData) GetGameId() uint64 {
+	if m != nil {
+		return m.GameId
+	}
+	return 0
+}
+
+// GameResultPacketAck defines a struct for the packet acknowledgment
+type GameResultPacketAck struct {
+	GameId uint64 `protobuf:"varint,1,opt,name=gameId,proto3" json:"gameId,omitempty"`
+}
+
+func (m *GameResultPacketAck) Reset()         { *m = GameResultPacketAck{} }
+func (m *GameResultPacketAck) String() string { return proto.CompactTextString(m) }
+func (*GameResultPacketAck) ProtoMessage()    {}
+func (*GameResultPacketAck) Descriptor() ([]byte, []int) {
+	return fileDescriptor_1100faa0adfb763c, []int{3}
+}
+func (m *GameResultPacketAck) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GameResultPacketAck) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GameResultPacketAck.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GameResultPacketAck) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GameResultPacketAck.Merge(m, src)
+}
+func (m *GameResultPacketAck) XXX_Size() int {
+	return m.Size()
+}
+func (m *GameResultPacketAck) XXX_DiscardUnknown() {
+	xxx_messageInfo_GameResultPacketAck.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GameResultPacketAck proto.InternalMessageInfo
+
+func (m *GameResultPacketAck) GetGameId() uint64 {
+	if m != nil {
+		return m.GameId
+	}
+	return 0
+}
+
 func init() {
 	proto.RegisterType((*SmallerPacketData)(nil), "tmsdkeys.smaller3.smaller.SmallerPacketData")
 	proto.RegisterType((*NoData)(nil), "tmsdkeys.smaller3.smaller.NoData")
+	proto.RegisterType((*GameResultPacketData)(nil), "tmsdkeys.smaller3.smaller.GameResultPacketData")
+	proto.RegisterType((*GameResultPacketAck)(nil), "tmsdkeys.smaller3.smaller.GameResultPacketAck")
 }
 
 func init() { proto.RegisterFile("smaller/packet.proto", fileDescriptor_1100faa0adfb763c) }
 
 var fileDescriptor_1100faa0adfb763c = []byte{
-	// 176 bytes of a gzipped FileDescriptorProto
+	// 241 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x29, 0xce, 0x4d, 0xcc,
 	0xc9, 0x49, 0x2d, 0xd2, 0x2f, 0x48, 0x4c, 0xce, 0x4e, 0x2d, 0xd1, 0x2b, 0x28, 0xca, 0x2f, 0xc9,
 	0x17, 0x92, 0x2c, 0xc9, 0x2d, 0x4e, 0xc9, 0x4e, 0xad, 0x2c, 0xd6, 0x83, 0x4a, 0x1b, 0xc3, 0x18,
-	0x4a, 0x51, 0x5c, 0x82, 0xc1, 0x10, 0x66, 0x00, 0x58, 0x87, 0x4b, 0x62, 0x49, 0xa2, 0x90, 0x35,
-	0x17, 0x5b, 0x5e, 0x3e, 0x88, 0x25, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x6d, 0xa4, 0xa8, 0x87, 0xd3,
-	0x00, 0x3d, 0x3f, 0xb0, 0x42, 0x0f, 0x86, 0x20, 0xa8, 0x16, 0x27, 0x0e, 0x2e, 0x36, 0x88, 0xe5,
-	0x4a, 0x1c, 0x5c, 0x6c, 0x10, 0x59, 0x27, 0xb7, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63,
-	0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96,
-	0x63, 0x88, 0xd2, 0x49, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0x87, 0x59,
-	0xa2, 0x0f, 0xb3, 0x44, 0xbf, 0x02, 0xc6, 0xd4, 0x2f, 0xa9, 0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03,
-	0xfb, 0xc7, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x46, 0xde, 0x6a, 0xe7, 0xe7, 0x00, 0x00, 0x00,
+	0x4a, 0x3b, 0x19, 0xb9, 0x04, 0x83, 0x21, 0xec, 0x00, 0xb0, 0x16, 0x97, 0xc4, 0x92, 0x44, 0x21,
+	0x6b, 0x2e, 0xb6, 0xbc, 0x7c, 0x10, 0x4b, 0x82, 0x51, 0x81, 0x51, 0x83, 0xdb, 0x48, 0x51, 0x0f,
+	0xa7, 0x09, 0x7a, 0x7e, 0x60, 0x85, 0x1e, 0x0c, 0x41, 0x50, 0x2d, 0x42, 0xb1, 0x5c, 0x02, 0xe9,
+	0x89, 0xb9, 0xa9, 0x41, 0xa9, 0xc5, 0xa5, 0x39, 0x25, 0x10, 0x43, 0x25, 0x98, 0xc0, 0xc6, 0xe8,
+	0xe3, 0x31, 0xc6, 0x1d, 0x4d, 0x0b, 0xd4, 0x50, 0x0c, 0xa3, 0x9c, 0x38, 0xb8, 0xd8, 0x20, 0x9e,
+	0x53, 0xe2, 0xe0, 0x62, 0x83, 0x58, 0xae, 0xa4, 0xc7, 0x25, 0x82, 0x4d, 0xbf, 0x90, 0x18, 0x17,
+	0x1b, 0x48, 0xbf, 0x67, 0x0a, 0xd8, 0x1f, 0x2c, 0x41, 0x50, 0x9e, 0x92, 0x2e, 0x97, 0x30, 0xba,
+	0x7a, 0xc7, 0xe4, 0x6c, 0x5c, 0xca, 0x9d, 0xdc, 0x4e, 0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e,
+	0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18, 0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58,
+	0x8e, 0x21, 0x4a, 0x27, 0x3d, 0xb3, 0x24, 0xa3, 0x34, 0x49, 0x2f, 0x39, 0x3f, 0x57, 0x1f, 0xe6,
+	0x37, 0x7d, 0x98, 0xdf, 0xf4, 0x2b, 0x60, 0x4c, 0xfd, 0x92, 0xca, 0x82, 0xd4, 0xe2, 0x24, 0x36,
+	0x70, 0x74, 0x18, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x90, 0xe5, 0xe2, 0xd4, 0xa6, 0x01, 0x00,
+	0x00,
 }
 
 func (m *SmallerPacketData) Marshal() (dAtA []byte, err error) {
@@ -205,6 +315,27 @@ func (m *SmallerPacketData_NoData) MarshalToSizedBuffer(dAtA []byte) (int, error
 	}
 	return len(dAtA) - i, nil
 }
+func (m *SmallerPacketData_GameResultPacket) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SmallerPacketData_GameResultPacket) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	if m.GameResultPacket != nil {
+		{
+			size, err := m.GameResultPacket.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintPacket(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	return len(dAtA) - i, nil
+}
 func (m *NoData) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -225,6 +356,62 @@ func (m *NoData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *GameResultPacketData) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GameResultPacketData) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameResultPacketData) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.GameId != 0 {
+		i = encodeVarintPacket(dAtA, i, uint64(m.GameId))
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GameResultPacketAck) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GameResultPacketAck) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GameResultPacketAck) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.GameId != 0 {
+		i = encodeVarintPacket(dAtA, i, uint64(m.GameId))
+		i--
+		dAtA[i] = 0x8
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -263,12 +450,48 @@ func (m *SmallerPacketData_NoData) Size() (n int) {
 	}
 	return n
 }
+func (m *SmallerPacketData_GameResultPacket) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GameResultPacket != nil {
+		l = m.GameResultPacket.Size()
+		n += 1 + l + sovPacket(uint64(l))
+	}
+	return n
+}
 func (m *NoData) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *GameResultPacketData) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GameId != 0 {
+		n += 1 + sovPacket(uint64(m.GameId))
+	}
+	return n
+}
+
+func (m *GameResultPacketAck) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.GameId != 0 {
+		n += 1 + sovPacket(uint64(m.GameId))
+	}
 	return n
 }
 
@@ -342,6 +565,41 @@ func (m *SmallerPacketData) Unmarshal(dAtA []byte) error {
 			}
 			m.Packet = &SmallerPacketData_NoData{v}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GameResultPacket", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthPacket
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			v := &GameResultPacketData{}
+			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			m.Packet = &SmallerPacketData_GameResultPacket{v}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPacket(dAtA[iNdEx:])
@@ -392,6 +650,144 @@ func (m *NoData) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: NoData: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPacket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GameResultPacketData) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPacket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GameResultPacketData: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GameResultPacketData: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GameId", wireType)
+			}
+			m.GameId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GameId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		default:
+			iNdEx = preIndex
+			skippy, err := skipPacket(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthPacket
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GameResultPacketAck) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowPacket
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GameResultPacketAck: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GameResultPacketAck: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GameId", wireType)
+			}
+			m.GameId = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowPacket
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.GameId |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipPacket(dAtA[iNdEx:])

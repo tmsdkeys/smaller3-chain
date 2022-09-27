@@ -2,12 +2,14 @@ import { txClient, queryClient, MissingWalletError , registry} from './module'
 
 import { SmallerPacketData } from "./module/types/smaller/packet"
 import { NoData } from "./module/types/smaller/packet"
+import { GameResultPacketData } from "./module/types/smaller/packet"
+import { GameResultPacketAck } from "./module/types/smaller/packet"
 import { Params } from "./module/types/smaller/params"
 import { StoredGame } from "./module/types/smaller/stored_game"
 import { SystemInfo } from "./module/types/smaller/system_info"
 
 
-export { SmallerPacketData, NoData, Params, StoredGame, SystemInfo };
+export { SmallerPacketData, NoData, GameResultPacketData, GameResultPacketAck, Params, StoredGame, SystemInfo };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -53,6 +55,8 @@ const getDefaultState = () => {
 				_Structure: {
 						SmallerPacketData: getStructure(SmallerPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
+						GameResultPacketData: getStructure(GameResultPacketData.fromPartial({})),
+						GameResultPacketAck: getStructure(GameResultPacketAck.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
 						StoredGame: getStructure(StoredGame.fromPartial({})),
 						SystemInfo: getStructure(SystemInfo.fromPartial({})),
@@ -249,6 +253,21 @@ export default {
 				}
 			}
 		},
+		async sendMsgSendGameResult({ rootGetters }, { value, fee = [], memo = '' }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSendGameResult(value)
+				const result = await txClient.signAndBroadcast([msg], {fee: { amount: fee, 
+	gas: "200000" }, memo})
+				return result
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendGameResult:Init Could not initialize signing client. Wallet is required.')
+				}else{
+					throw new Error('TxClient:MsgSendGameResult:Send Could not broadcast Tx: '+ e.message)
+				}
+			}
+		},
 		
 		async MsgPlayGame({ rootGetters }, { value }) {
 			try {
@@ -260,6 +279,19 @@ export default {
 					throw new Error('TxClient:MsgPlayGame:Init Could not initialize signing client. Wallet is required.')
 				} else{
 					throw new Error('TxClient:MsgPlayGame:Create Could not create message: ' + e.message)
+				}
+			}
+		},
+		async MsgSendGameResult({ rootGetters }, { value }) {
+			try {
+				const txClient=await initTxClient(rootGetters)
+				const msg = await txClient.msgSendGameResult(value)
+				return msg
+			} catch (e) {
+				if (e == MissingWalletError) {
+					throw new Error('TxClient:MsgSendGameResult:Init Could not initialize signing client. Wallet is required.')
+				} else{
+					throw new Error('TxClient:MsgSendGameResult:Create Could not create message: ' + e.message)
 				}
 			}
 		},

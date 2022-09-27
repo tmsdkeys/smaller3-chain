@@ -25,6 +25,8 @@ export interface SmallerMsgPlayGameResponse {
   win?: boolean;
 }
 
+export type SmallerMsgSendGameResultResponse = object;
+
 /**
  * Params defines the parameters for the module.
  */
