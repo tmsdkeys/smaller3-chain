@@ -1,5 +1,6 @@
 /* eslint-disable */
 import { Params } from "../smaller/params";
+import { SystemInfo } from "../smaller/system_info";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "tmsdkeys.smaller3.smaller";
@@ -7,8 +8,9 @@ export const protobufPackage = "tmsdkeys.smaller3.smaller";
 /** GenesisState defines the smaller module's genesis state. */
 export interface GenesisState {
   params: Params | undefined;
-  /** this line is used by starport scaffolding # genesis/proto/state */
   port_id: string;
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  systemInfo: SystemInfo | undefined;
 }
 
 const baseGenesisState: object = { port_id: "" };
@@ -20,6 +22,9 @@ export const GenesisState = {
     }
     if (message.port_id !== "") {
       writer.uint32(18).string(message.port_id);
+    }
+    if (message.systemInfo !== undefined) {
+      SystemInfo.encode(message.systemInfo, writer.uint32(26).fork()).ldelim();
     }
     return writer;
   },
@@ -36,6 +41,9 @@ export const GenesisState = {
           break;
         case 2:
           message.port_id = reader.string();
+          break;
+        case 3:
+          message.systemInfo = SystemInfo.decode(reader, reader.uint32());
           break;
         default:
           reader.skipType(tag & 7);
@@ -57,6 +65,11 @@ export const GenesisState = {
     } else {
       message.port_id = "";
     }
+    if (object.systemInfo !== undefined && object.systemInfo !== null) {
+      message.systemInfo = SystemInfo.fromJSON(object.systemInfo);
+    } else {
+      message.systemInfo = undefined;
+    }
     return message;
   },
 
@@ -65,6 +78,10 @@ export const GenesisState = {
     message.params !== undefined &&
       (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     message.port_id !== undefined && (obj.port_id = message.port_id);
+    message.systemInfo !== undefined &&
+      (obj.systemInfo = message.systemInfo
+        ? SystemInfo.toJSON(message.systemInfo)
+        : undefined);
     return obj;
   },
 
@@ -79,6 +96,11 @@ export const GenesisState = {
       message.port_id = object.port_id;
     } else {
       message.port_id = "";
+    }
+    if (object.systemInfo !== undefined && object.systemInfo !== null) {
+      message.systemInfo = SystemInfo.fromPartial(object.systemInfo);
+    } else {
+      message.systemInfo = undefined;
     }
     return message;
   },

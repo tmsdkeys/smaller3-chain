@@ -25,12 +25,21 @@ export interface RpcStatus {
  */
 export type SmallerParams = object;
 
+export interface SmallerQueryGetSystemInfoResponse {
+  SystemInfo?: SmallerSystemInfo;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
 export interface SmallerQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: SmallerParams;
+}
+
+export interface SmallerSystemInfo {
+  /** @format uint64 */
+  nextId?: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -240,6 +249,22 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<SmallerQueryParamsResponse, RpcStatus>({
       path: `/tmsdkeys/smaller3/smaller/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QuerySystemInfo
+   * @summary Queries a SystemInfo by index.
+   * @request GET:/tmsdkeys/smaller3/smaller/system_info
+   */
+  querySystemInfo = (params: RequestParams = {}) =>
+    this.request<SmallerQueryGetSystemInfoResponse, RpcStatus>({
+      path: `/tmsdkeys/smaller3/smaller/system_info`,
       method: "GET",
       format: "json",
       ...params,

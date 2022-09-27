@@ -1,0 +1,9 @@
+syntax = "proto3";
+package tmsdkeys.smaller3.smaller;
+
+option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
+
+message SystemInfo {
+  uint64 nextId = 1; 
+  
+}

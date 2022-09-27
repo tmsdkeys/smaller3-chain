@@ -3,6 +3,7 @@ package tmsdkeys.smaller3.smaller;
 
 import "gogoproto/gogo.proto";
 import "smaller/params.proto";
+import "smaller/system_info.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
@@ -11,5 +12,6 @@ option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   string port_id = 2;
+  SystemInfo systemInfo = 3;
   // this line is used by starport scaffolding # genesis/proto/state
 }
