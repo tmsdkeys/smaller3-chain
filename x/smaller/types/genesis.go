@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	host "github.com/cosmos/ibc-go/v3/modules/core/24-host"
 )
 
@@ -11,8 +12,10 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default Capability genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		PortId:         PortID,
-		SystemInfo:     nil,
+		PortId: PortID,
+		SystemInfo: SystemInfo{
+			NextId: uint64(DefaultIndex),
+		},
 		StoredGameList: []StoredGame{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),

@@ -13,7 +13,7 @@ option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
 message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   string port_id = 2;
-  SystemInfo systemInfo = 3;
+  SystemInfo systemInfo = 3 [(gogoproto.nullable) = false];
   repeated StoredGame storedGameList = 4 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }

@@ -22,7 +22,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 				PortId: types.PortID,
-				SystemInfo: &types.SystemInfo{
+				SystemInfo: types.SystemInfo{
 					NextId: 87,
 				},
 				StoredGameList: []types.StoredGame{
