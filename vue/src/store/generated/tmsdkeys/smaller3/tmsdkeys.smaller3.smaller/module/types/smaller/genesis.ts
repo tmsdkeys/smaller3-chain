@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { Params } from "../smaller/params";
 import { SystemInfo } from "../smaller/system_info";
+import { StoredGame } from "../smaller/stored_game";
 import { Writer, Reader } from "protobufjs/minimal";
 
 export const protobufPackage = "tmsdkeys.smaller3.smaller";
@@ -9,8 +10,9 @@ export const protobufPackage = "tmsdkeys.smaller3.smaller";
 export interface GenesisState {
   params: Params | undefined;
   port_id: string;
-  /** this line is used by starport scaffolding # genesis/proto/state */
   systemInfo: SystemInfo | undefined;
+  /** this line is used by starport scaffolding # genesis/proto/state */
+  storedGameList: StoredGame[];
 }
 
 const baseGenesisState: object = { port_id: "" };
@@ -26,6 +28,9 @@ export const GenesisState = {
     if (message.systemInfo !== undefined) {
       SystemInfo.encode(message.systemInfo, writer.uint32(26).fork()).ldelim();
     }
+    for (const v of message.storedGameList) {
+      StoredGame.encode(v!, writer.uint32(34).fork()).ldelim();
+    }
     return writer;
   },
 
@@ -33,6 +38,7 @@ export const GenesisState = {
     const reader = input instanceof Uint8Array ? new Reader(input) : input;
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = { ...baseGenesisState } as GenesisState;
+    message.storedGameList = [];
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
@@ -45,6 +51,11 @@ export const GenesisState = {
         case 3:
           message.systemInfo = SystemInfo.decode(reader, reader.uint32());
           break;
+        case 4:
+          message.storedGameList.push(
+            StoredGame.decode(reader, reader.uint32())
+          );
+          break;
         default:
           reader.skipType(tag & 7);
           break;
@@ -55,6 +66,7 @@ export const GenesisState = {
 
   fromJSON(object: any): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.storedGameList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromJSON(object.params);
     } else {
@@ -70,6 +82,11 @@ export const GenesisState = {
     } else {
       message.systemInfo = undefined;
     }
+    if (object.storedGameList !== undefined && object.storedGameList !== null) {
+      for (const e of object.storedGameList) {
+        message.storedGameList.push(StoredGame.fromJSON(e));
+      }
+    }
     return message;
   },
 
@@ -82,11 +99,19 @@ export const GenesisState = {
       (obj.systemInfo = message.systemInfo
         ? SystemInfo.toJSON(message.systemInfo)
         : undefined);
+    if (message.storedGameList) {
+      obj.storedGameList = message.storedGameList.map((e) =>
+        e ? StoredGame.toJSON(e) : undefined
+      );
+    } else {
+      obj.storedGameList = [];
+    }
     return obj;
   },
 
   fromPartial(object: DeepPartial<GenesisState>): GenesisState {
     const message = { ...baseGenesisState } as GenesisState;
+    message.storedGameList = [];
     if (object.params !== undefined && object.params !== null) {
       message.params = Params.fromPartial(object.params);
     } else {
@@ -101,6 +126,11 @@ export const GenesisState = {
       message.systemInfo = SystemInfo.fromPartial(object.systemInfo);
     } else {
       message.systemInfo = undefined;
+    }
+    if (object.storedGameList !== undefined && object.storedGameList !== null) {
+      for (const e of object.storedGameList) {
+        message.storedGameList.push(StoredGame.fromPartial(e));
+      }
     }
     return message;
   },

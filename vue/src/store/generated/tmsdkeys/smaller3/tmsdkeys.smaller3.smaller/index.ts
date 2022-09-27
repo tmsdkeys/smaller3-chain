@@ -3,10 +3,11 @@ import { txClient, queryClient, MissingWalletError , registry} from './module'
 import { SmallerPacketData } from "./module/types/smaller/packet"
 import { NoData } from "./module/types/smaller/packet"
 import { Params } from "./module/types/smaller/params"
+import { StoredGame } from "./module/types/smaller/stored_game"
 import { SystemInfo } from "./module/types/smaller/system_info"
 
 
-export { SmallerPacketData, NoData, Params, SystemInfo };
+export { SmallerPacketData, NoData, Params, StoredGame, SystemInfo };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -46,11 +47,14 @@ const getDefaultState = () => {
 	return {
 				Params: {},
 				SystemInfo: {},
+				StoredGame: {},
+				StoredGameAll: {},
 				
 				_Structure: {
 						SmallerPacketData: getStructure(SmallerPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
+						StoredGame: getStructure(StoredGame.fromPartial({})),
 						SystemInfo: getStructure(SystemInfo.fromPartial({})),
 						
 		},
@@ -91,6 +95,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.SystemInfo[JSON.stringify(params)] ?? {}
+		},
+				getStoredGame: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.StoredGame[JSON.stringify(params)] ?? {}
+		},
+				getStoredGameAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.StoredGameAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -165,6 +181,54 @@ export default {
 				return getters['getSystemInfo']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QuerySystemInfo API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryStoredGame({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryStoredGame( key.index)).data
+				
+					
+				commit('QUERY', { query: 'StoredGame', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryStoredGame', payload: { options: { all }, params: {...key},query }})
+				return getters['getStoredGame']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryStoredGame API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryStoredGameAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryStoredGameAll(query)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await queryClient.queryStoredGameAll({...query, 'pagination.key':(<any> value).pagination.next_key})).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'StoredGameAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryStoredGameAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getStoredGameAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryStoredGameAll API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

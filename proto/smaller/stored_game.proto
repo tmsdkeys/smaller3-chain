@@ -1,0 +1,13 @@
+syntax = "proto3";
+package tmsdkeys.smaller3.smaller;
+
+option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
+
+message StoredGame {
+  string index = 1; 
+  string player = 2; 
+  bool win = 3; 
+  bool sentToLB = 4; 
+  
+}
+
