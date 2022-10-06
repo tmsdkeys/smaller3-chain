@@ -1,0 +1,12 @@
+syntax = "proto3";
+package tmsdkeys.smaller3.smaller;
+
+option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
+
+message PlayerInfo {
+  string player = 1; 
+  uint64 winCount = 2; 
+  bool hasBeenTopRank = 3; 
+  
+}
+

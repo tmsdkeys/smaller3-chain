@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "smaller/params.proto";
 import "smaller/system_info.proto";
 import "smaller/stored_game.proto";
+import "smaller/player_info.proto";
 // this line is used by starport scaffolding # genesis/proto/import
 
 option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
@@ -15,6 +16,7 @@ message GenesisState {
   string port_id = 2;
   SystemInfo systemInfo = 3 [(gogoproto.nullable) = false];
   repeated StoredGame storedGameList = 4 [(gogoproto.nullable) = false];
+  repeated PlayerInfo playerInfoList = 5 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }
 

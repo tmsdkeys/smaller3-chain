@@ -7,6 +7,7 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "smaller/params.proto";
 import "smaller/system_info.proto";
 import "smaller/stored_game.proto";
+import "smaller/player_info.proto";
 // this line is used by starport scaffolding # 1
 
 option go_package = "github.com/tmsdkeys/smaller3/x/smaller/types";
@@ -29,6 +30,16 @@ service Query {
 	// Queries a list of StoredGame items.
 	rpc StoredGameAll(QueryAllStoredGameRequest) returns (QueryAllStoredGameResponse) {
 		option (google.api.http).get = "/tmsdkeys/smaller3/smaller/stored_game";
+	}
+
+// Queries a PlayerInfo by index.
+	rpc PlayerInfo(QueryGetPlayerInfoRequest) returns (QueryGetPlayerInfoResponse) {
+		option (google.api.http).get = "/tmsdkeys/smaller3/smaller/player_info/{player}";
+	}
+
+	// Queries a list of PlayerInfo items.
+	rpc PlayerInfoAll(QueryAllPlayerInfoRequest) returns (QueryAllPlayerInfoResponse) {
+		option (google.api.http).get = "/tmsdkeys/smaller3/smaller/player_info";
 	}
 
 // this line is used by starport scaffolding # 2
@@ -63,6 +74,24 @@ message QueryAllStoredGameRequest {
 
 message QueryAllStoredGameResponse {
 	repeated StoredGame storedGame = 1 [(gogoproto.nullable) = false];
+	cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+message QueryGetPlayerInfoRequest {
+	  string player = 1;
+
+}
+
+message QueryGetPlayerInfoResponse {
+	PlayerInfo playerInfo = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllPlayerInfoRequest {
+	cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllPlayerInfoResponse {
+	repeated PlayerInfo playerInfo = 1 [(gogoproto.nullable) = false];
 	cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

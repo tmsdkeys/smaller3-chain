@@ -32,6 +32,29 @@ export type SmallerMsgSendGameResultResponse = object;
  */
 export type SmallerParams = object;
 
+export interface SmallerPlayerInfo {
+  player?: string;
+
+  /** @format uint64 */
+  winCount?: string;
+  hasBeenTopRank?: boolean;
+}
+
+export interface SmallerQueryAllPlayerInfoResponse {
+  playerInfo?: SmallerPlayerInfo[];
+
+  /**
+   * PageResponse is to be embedded in gRPC response messages where the
+   * corresponding request message has used PageRequest.
+   *
+   *  message SomeResponse {
+   *          repeated Bar results = 1;
+   *          PageResponse page = 2;
+   *  }
+   */
+  pagination?: V1Beta1PageResponse;
+}
+
 export interface SmallerQueryAllStoredGameResponse {
   storedGame?: SmallerStoredGame[];
 
@@ -45,6 +68,10 @@ export interface SmallerQueryAllStoredGameResponse {
    *  }
    */
   pagination?: V1Beta1PageResponse;
+}
+
+export interface SmallerQueryGetPlayerInfoResponse {
+  playerInfo?: SmallerPlayerInfo;
 }
 
 export interface SmallerQueryGetStoredGameResponse {
@@ -345,6 +372,48 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
   queryParams = (params: RequestParams = {}) =>
     this.request<SmallerQueryParamsResponse, RpcStatus>({
       path: `/tmsdkeys/smaller3/smaller/params`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPlayerInfoAll
+   * @summary Queries a list of PlayerInfo items.
+   * @request GET:/tmsdkeys/smaller3/smaller/player_info
+   */
+  queryPlayerInfoAll = (
+    query?: {
+      "pagination.key"?: string;
+      "pagination.offset"?: string;
+      "pagination.limit"?: string;
+      "pagination.count_total"?: boolean;
+      "pagination.reverse"?: boolean;
+    },
+    params: RequestParams = {},
+  ) =>
+    this.request<SmallerQueryAllPlayerInfoResponse, RpcStatus>({
+      path: `/tmsdkeys/smaller3/smaller/player_info`,
+      method: "GET",
+      query: query,
+      format: "json",
+      ...params,
+    });
+
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryPlayerInfo
+   * @summary Queries a PlayerInfo by index.
+   * @request GET:/tmsdkeys/smaller3/smaller/player_info/{player}
+   */
+  queryPlayerInfo = (player: string, params: RequestParams = {}) =>
+    this.request<SmallerQueryGetPlayerInfoResponse, RpcStatus>({
+      path: `/tmsdkeys/smaller3/smaller/player_info/${player}`,
       method: "GET",
       format: "json",
       ...params,
