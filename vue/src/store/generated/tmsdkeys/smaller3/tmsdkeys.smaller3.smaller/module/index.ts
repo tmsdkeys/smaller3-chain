@@ -4,13 +4,13 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
-import { MsgPlayGame } from "./types/smaller/tx";
 import { MsgSendGameResult } from "./types/smaller/tx";
+import { MsgPlayGame } from "./types/smaller/tx";
 
 
 const types = [
-  ["/tmsdkeys.smaller3.smaller.MsgPlayGame", MsgPlayGame],
   ["/tmsdkeys.smaller3.smaller.MsgSendGameResult", MsgSendGameResult],
+  ["/tmsdkeys.smaller3.smaller.MsgPlayGame", MsgPlayGame],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -43,8 +43,8 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
-    msgPlayGame: (data: MsgPlayGame): EncodeObject => ({ typeUrl: "/tmsdkeys.smaller3.smaller.MsgPlayGame", value: MsgPlayGame.fromPartial( data ) }),
     msgSendGameResult: (data: MsgSendGameResult): EncodeObject => ({ typeUrl: "/tmsdkeys.smaller3.smaller.MsgSendGameResult", value: MsgSendGameResult.fromPartial( data ) }),
+    msgPlayGame: (data: MsgPlayGame): EncodeObject => ({ typeUrl: "/tmsdkeys.smaller3.smaller.MsgPlayGame", value: MsgPlayGame.fromPartial( data ) }),
     
   };
 };
