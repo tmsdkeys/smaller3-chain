@@ -4,12 +4,15 @@ import { SmallerPacketData } from "./module/types/smaller/packet"
 import { NoData } from "./module/types/smaller/packet"
 import { GameResultPacketData } from "./module/types/smaller/packet"
 import { GameResultPacketAck } from "./module/types/smaller/packet"
+import { TopRankPacketData } from "./module/types/smaller/packet"
+import { TopRankPacketAck } from "./module/types/smaller/packet"
 import { Params } from "./module/types/smaller/params"
+import { PlayerInfo } from "./module/types/smaller/player_info"
 import { StoredGame } from "./module/types/smaller/stored_game"
 import { SystemInfo } from "./module/types/smaller/system_info"
 
 
-export { SmallerPacketData, NoData, GameResultPacketData, GameResultPacketAck, Params, StoredGame, SystemInfo };
+export { SmallerPacketData, NoData, GameResultPacketData, GameResultPacketAck, TopRankPacketData, TopRankPacketAck, Params, PlayerInfo, StoredGame, SystemInfo };
 
 async function initTxClient(vuexGetters) {
 	return await txClient(vuexGetters['common/wallet/signer'], {
@@ -51,13 +54,18 @@ const getDefaultState = () => {
 				SystemInfo: {},
 				StoredGame: {},
 				StoredGameAll: {},
+				PlayerInfo: {},
+				PlayerInfoAll: {},
 				
 				_Structure: {
 						SmallerPacketData: getStructure(SmallerPacketData.fromPartial({})),
 						NoData: getStructure(NoData.fromPartial({})),
 						GameResultPacketData: getStructure(GameResultPacketData.fromPartial({})),
 						GameResultPacketAck: getStructure(GameResultPacketAck.fromPartial({})),
+						TopRankPacketData: getStructure(TopRankPacketData.fromPartial({})),
+						TopRankPacketAck: getStructure(TopRankPacketAck.fromPartial({})),
 						Params: getStructure(Params.fromPartial({})),
+						PlayerInfo: getStructure(PlayerInfo.fromPartial({})),
 						StoredGame: getStructure(StoredGame.fromPartial({})),
 						SystemInfo: getStructure(SystemInfo.fromPartial({})),
 						
@@ -111,6 +119,18 @@ export default {
 						(<any> params).query=null
 					}
 			return state.StoredGameAll[JSON.stringify(params)] ?? {}
+		},
+				getPlayerInfo: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.PlayerInfo[JSON.stringify(params)] ?? {}
+		},
+				getPlayerInfoAll: (state) => (params = { params: {}}) => {
+					if (!(<any> params).query) {
+						(<any> params).query=null
+					}
+			return state.PlayerInfoAll[JSON.stringify(params)] ?? {}
 		},
 				
 		getTypeStructure: (state) => (type) => {
@@ -233,6 +253,54 @@ export default {
 				return getters['getStoredGameAll']( { params: {...key}, query}) ?? {}
 			} catch (e) {
 				throw new Error('QueryClient:QueryStoredGameAll API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryPlayerInfo({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryPlayerInfo( key.player)).data
+				
+					
+				commit('QUERY', { query: 'PlayerInfo', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryPlayerInfo', payload: { options: { all }, params: {...key},query }})
+				return getters['getPlayerInfo']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryPlayerInfo API Node Unavailable. Could not perform query: ' + e.message)
+				
+			}
+		},
+		
+		
+		
+		
+		 		
+		
+		
+		async QueryPlayerInfoAll({ commit, rootGetters, getters }, { options: { subscribe, all} = { subscribe:false, all:false}, params, query=null }) {
+			try {
+				const key = params ?? {};
+				const queryClient=await initQueryClient(rootGetters)
+				let value= (await queryClient.queryPlayerInfoAll(query)).data
+				
+					
+				while (all && (<any> value).pagination && (<any> value).pagination.next_key!=null) {
+					let next_values=(await queryClient.queryPlayerInfoAll({...query, 'pagination.key':(<any> value).pagination.next_key})).data
+					value = mergeResults(value, next_values);
+				}
+				commit('QUERY', { query: 'PlayerInfoAll', key: { params: {...key}, query}, value })
+				if (subscribe) commit('SUBSCRIBE', { action: 'QueryPlayerInfoAll', payload: { options: { all }, params: {...key},query }})
+				return getters['getPlayerInfoAll']( { params: {...key}, query}) ?? {}
+			} catch (e) {
+				throw new Error('QueryClient:QueryPlayerInfoAll API Node Unavailable. Could not perform query: ' + e.message)
 				
 			}
 		},

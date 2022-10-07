@@ -139,7 +139,10 @@ func (am AppModule) OnRecvPacket(
 	// Dispatch packet
 	switch packet := modulePacketData.Packet.(type) {
 	case *types.SmallerPacketData_GameResultPacket:
-		packetAck, err := am.keeper.OnRecvGameResultPacket(ctx, modulePacket, *packet.GameResultPacket)
+		err := sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Invalid ack packet. This packet can only be received on this chain.")
+		ack = channeltypes.NewErrorAcknowledgement(err.Error())
+	case *types.SmallerPacketData_TopRankPacket:
+		packetAck, err := am.keeper.OnRecvTopRankPacket(ctx, modulePacket, *packet.TopRankPacket)
 		if err != nil {
 			ack = channeltypes.NewErrorAcknowledgement(err.Error())
 		} else {
@@ -152,7 +155,7 @@ func (am AppModule) OnRecvPacket(
 		}
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
-				types.EventTypeGameResultPacket,
+				types.EventTypeTopRankPacket,
 				sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 				sdk.NewAttribute(types.AttributeKeyAckSuccess, fmt.Sprintf("%t", err != nil)),
 			),
@@ -196,6 +199,8 @@ func (am AppModule) OnAcknowledgementPacket(
 			return err
 		}
 		eventType = types.EventTypeGameResultPacket
+	case *types.SmallerPacketData_TopRankPacket:
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Invalid ack packet. This packet can only be received on this chain.")
 		// this line is used by starport scaffolding # ibc/packet/module/ack
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
@@ -248,6 +253,8 @@ func (am AppModule) OnTimeoutPacket(
 		if err != nil {
 			return err
 		}
+	case *types.SmallerPacketData_TopRankPacket:
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Invalid ack packet. This packet can only be received on this chain.")
 		// this line is used by starport scaffolding # ibc/packet/module/timeout
 	default:
 		errMsg := fmt.Sprintf("unrecognized %s packet type: %T", types.ModuleName, packet)
