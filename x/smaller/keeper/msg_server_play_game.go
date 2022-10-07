@@ -24,7 +24,17 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 		return nil, sdkerrors.Wrapf(types.ErrInvalidLengthStoredGame, msg.NumPick)
 	}
 
+	playerInfo, found := k.Keeper.GetPlayerInfo(ctx, msg.Creator)
+	if !found {
+		playerInfo.WinCount = 0
+		playerInfo.HasBeenTopRank = false
+		playerInfo.Player = msg.Creator
+	}
+
 	win := numPick < 3
+	if win {
+		playerInfo.WinCount += 1
+	}
 
 	storedGame := types.StoredGame{
 		Index:    newIndex,
@@ -34,6 +44,8 @@ func (k msgServer) PlayGame(goCtx context.Context, msg *types.MsgPlayGame) (*typ
 	}
 
 	k.Keeper.SetStoredGame(ctx, storedGame)
+
+	k.Keeper.SetPlayerInfo(ctx, playerInfo)
 
 	systemInfo.NextId++
 	k.Keeper.SetSystemInfo(ctx, systemInfo)

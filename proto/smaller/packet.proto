@@ -20,6 +20,8 @@ message NoData {
 // GameResultPacketData defines a struct for the packet payload
 message GameResultPacketData {
   uint64 gameId = 1;
+  string address = 2;
+  uint64 winCount = 3;
 }
 
 // GameResultPacketAck defines a struct for the packet acknowledgment

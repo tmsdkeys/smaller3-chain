@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"errors"
+	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -66,18 +67,6 @@ func (k Keeper) TransmitGameResultPacket(
 	return nil
 }
 
-// OnRecvGameResultPacket processes packet reception
-func (k Keeper) OnRecvGameResultPacket(ctx sdk.Context, packet channeltypes.Packet, data types.GameResultPacketData) (packetAck types.GameResultPacketAck, err error) {
-	// validate packet data upon receiving
-	if err := data.ValidateBasic(); err != nil {
-		return packetAck, err
-	}
-
-	// TODO: packet reception logic
-
-	return packetAck, nil
-}
-
 // OnAcknowledgementGameResultPacket responds to the the success or failure of a packet
 // acknowledgement written on the receiving chain.
 func (k Keeper) OnAcknowledgementGameResultPacket(ctx sdk.Context, packet channeltypes.Packet, data types.GameResultPacketData, ack channeltypes.Acknowledgement) error {
@@ -98,6 +87,13 @@ func (k Keeper) OnAcknowledgementGameResultPacket(ctx sdk.Context, packet channe
 		}
 
 		// TODO: successful acknowledgement logic
+		storedGame, found := k.GetStoredGame(ctx, strconv.FormatUint(packetAck.GameId, 10))
+		if !found {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Could not find game")
+		}
+		storedGame.SentToLB = true
+
+		k.SetStoredGame(ctx, storedGame)
 
 		return nil
 	default:
